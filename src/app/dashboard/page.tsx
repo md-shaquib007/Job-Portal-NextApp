@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -166,7 +165,6 @@ export default async function DashboardPage() {
                       >
                         {application.status}
                       </span>
-                      
                     </div>
 
                     <div className="mt-4 text-right">
