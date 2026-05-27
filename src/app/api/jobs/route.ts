@@ -1,7 +1,9 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+
+import { jobSchema } from "@/lib/validations/job";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -11,10 +13,18 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json();
-    const job = await prisma?.job.create({
+    const result = jobSchema.safeParse(data);
+    if (!result.success) {
+      return NextResponse.json(
+        { errors: result.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+
+    const job = await prisma.job.create({
       data: {
-        ...data,
-        postedById: session?.user.id,
+        ...result.data,
+        postedById: session.user.id,
       },
     });
     return NextResponse.json(job);
@@ -24,7 +34,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const jobs = await prisma.job.findMany({
       orderBy: {

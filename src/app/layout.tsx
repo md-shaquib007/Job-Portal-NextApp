@@ -4,7 +4,7 @@ import SessionWrapper from "./auth/signin/SessionWrapper";
 import "./globals.css";
 
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
