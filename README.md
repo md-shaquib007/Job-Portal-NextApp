@@ -58,8 +58,13 @@ Create two files in your root directory: `.env` and `.env.local` (or put them al
 ```env
 PORT=3000
 
-# Connection string for your PostgreSQL database
-DATABASE_URL="postgresql://username:password@localhost:5432/your_database_name?schema=public"
+# Option A: Cloud PostgreSQL Database (recommended for Vercel/Production)
+# Services: Neon, Supabase, Railway, etc.
+# sslmode=require is necessary for cloud PostgreSQL connection strings in serverless environments.
+DATABASE_URL="postgresql://username:password@ep-xxxxx.region.aws.neon.tech/jobportal?sslmode=require"
+
+# Option B: Local PostgreSQL Database (development only)
+# DATABASE_URL="postgresql://username:password@localhost:5432/your_database_name?schema=public"
 
 # Credentials for GitHub OAuth (See below on how to obtain these)
 GITHUB_CLIENT_ID="your_github_client_id"
@@ -109,6 +114,39 @@ npm run dev
 ```
 
 Open your browser and navigate to **[http://localhost:3000](http://localhost:3000)** to see the application in action!
+
+---
+
+## ☁️ Solution: Deploying with Cloud PostgreSQL (Neon/Supabase) & Vercel
+
+If you want to host your database on a cloud provider like **Neon**, **Supabase**, **Railway**, or **Aiven** and host the app on **Vercel**, follow these steps:
+
+### Step 1: Secure a Cloud PostgreSQL Database URL
+1. Sign up on [Neon](https://neon.tech/) (recommended) or any other provider.
+2. Create a new PostgreSQL database (e.g., named `jobportal`).
+3. Copy your project connection string. It will look like this:
+   `postgresql://username:password@ep-xxxxx.region.aws.neon.tech/jobportal?sslmode=require`
+   *(Ensure `sslmode=require` is present at the end of your connection URL so the serverless environments can connect securely over TLS).*
+
+### Step 2: Configure Environment Variables on Vercel
+When deploying your Next.js application to Vercel, configure your environment variables:
+1. Go to your project on the **Vercel Dashboard** -> **Settings** -> **Environment Variables**.
+2. Add the following keys:
+   - `DATABASE_URL`: Add your cloud PostgreSQL connection string (copied in Step 1).
+   - `GITHUB_CLIENT_ID`: Your production GitHub OAuth Client ID.
+   - `GITHUB_CLIENT_SECRET`: Your production GitHub OAuth Client Secret.
+   - `NEXTAUTH_SECRET`: A secure random secret (generate via `openssl rand -base64 32`).
+   - `NEXTAUTH_URL`: Your Vercel deployment URL (e.g., `https://your-domain.vercel.app`).
+
+### Step 3: Run Migrations on the Cloud Database
+Before running the app or redeploying, push your Prisma schemas to your cloud database so the tables are created:
+```bash
+# Push database changes directly to your Cloud Postgres Database
+npx prisma db push
+```
+
+### Step 4: Redeploy the Project
+- Push your changes to Git (GitHub/GitLab) or trigger a manual redeployment inside Vercel Dashboard to build the application with the new configuration.
 
 ---
 
