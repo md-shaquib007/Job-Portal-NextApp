@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import ApplyButton from "./ApplyButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function jobPage({
   params,
 }: {
