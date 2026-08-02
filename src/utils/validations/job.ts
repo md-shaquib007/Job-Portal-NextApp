@@ -22,4 +22,4 @@ export const jobSchema = z.object({
   salary: z.string().optional().or(z.literal("")),
 });
 
-export type JobSchemaInput = z.infer<typeof jobSchema>;
+export type JobInput = z.infer<typeof jobSchema>;

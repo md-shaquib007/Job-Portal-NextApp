@@ -1,7 +1,6 @@
-// app/providers/SessionWrapper.tsx
 "use client";
 
-import { SessionProvider as Provider } from "next-auth/react";
+import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 
 type Props = {
@@ -10,5 +9,9 @@ type Props = {
 };
 
 export default function SessionProvider({ children, session }: Props) {
-  return <Provider session={session}>{children}</Provider>;
+  return (
+    <NextAuthSessionProvider session={session}>
+      {children}
+    </NextAuthSessionProvider>
+  );
 }

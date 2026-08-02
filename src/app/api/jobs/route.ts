@@ -1,50 +1,32 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-
-import { jobSchema } from "@/lib/validations/job";
+import { getSession } from "@/config/session";
+import { JobController } from "@/controllers/job.controller";
+import { apiError, apiSuccess, handleApiError } from "@/utils/api-response";
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
 
   try {
-    const data = await request.json();
-    const result = jobSchema.safeParse(data);
-    if (!result.success) {
-      return NextResponse.json(
-        { errors: result.error.flatten().fieldErrors },
-        { status: 400 }
-      );
+    const body = await request.json();
+    const result = await JobController.create(body, session.user.id);
+
+    if (!result.ok) {
+      return apiError("Validation failed", 400, { errors: result.errors });
     }
 
-    const job = await prisma.job.create({
-      data: {
-        ...result.data,
-        postedById: session.user.id,
-      },
-    });
-    return NextResponse.json(job);
+    return apiSuccess(result.data);
   } catch (error) {
-    console.log("Error in src/app/api/jobs/ in POST : ", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return handleApiError("Error creating job", error);
   }
 }
 
 export async function GET() {
   try {
-    const jobs = await prisma.job.findMany({
-      orderBy: {
-        postedAt: "desc",
-      },
-    });
-
-    return NextResponse.json(jobs);
+    const jobs = await JobController.listAll();
+    return apiSuccess(jobs);
   } catch (error) {
-    console.log("Error in src/app/api/jobs/ in GET: ", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return handleApiError("Error fetching jobs", error);
   }
 }

@@ -1,4 +1,3 @@
-// Navbar.tsx
 "use client";
 
 import Link from "next/link";
@@ -16,7 +15,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center">
               <Image
                 src="/favicon.ico"
-                alt="Job boarding logo not found"
+                alt="Job Board logo"
                 height={30}
                 width={30}
                 className="h-8 w-auto"
@@ -48,7 +47,7 @@ export default function Navbar() {
                   href="/dashboard"
                   className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  DashBoard
+                  Dashboard
                 </Link>
 
                 <button
@@ -60,12 +59,20 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <Link
-                href="/auth/signin"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Sign-in
-              </Link>
+              <>
+                <Link
+                  href="/auth/signin"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </>
             )}
           </div>
         </div>

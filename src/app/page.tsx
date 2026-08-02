@@ -30,19 +30,18 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 grid gap-8 sm:grid-cols-2 md:grid-cols-3 text-center">
           <div className="p-6 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900">
-              Verified Companies
+              Browse & Search
             </h3>
             <p className="mt-2 text-gray-600 text-sm">
-              Apply only to trusted and verified employers.
+              Filter jobs by title, type, and location with pagination.
             </p>
           </div>
-
           <div className="p-6 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900">
               Easy Applications
             </h3>
             <p className="mt-2 text-gray-600 text-sm">
-              Apply to jobs in seconds with your profile.
+              Apply to jobs in seconds with email sign-up or GitHub.
             </p>
           </div>
 
@@ -51,7 +50,7 @@ export default function Home() {
               Track Status
             </h3>
             <p className="mt-2 text-gray-600 text-sm">
-              Track all your applications in one dashboard.
+              Track applications and manage applicants from your dashboard.
             </p>
           </div>
         </div>
