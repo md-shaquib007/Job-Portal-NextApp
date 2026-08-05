@@ -11,10 +11,13 @@ export function verifyPassword(password: string, storedHash: string): boolean {
   if (parts.length !== 2) return false;
 
   const [salt, key] = parts;
-  const hashedPassword = scryptSync(password, salt, 64).toString("hex");
+  if (!salt || !key || !/^[a-f0-9]{128}$/i.test(key)) return false;
 
-  return timingSafeEqual(
-    Buffer.from(key, "hex"),
-    Buffer.from(hashedPassword, "hex"),
-  );
+  try {
+    const storedKey = Buffer.from(key, "hex");
+    const hashedKey = scryptSync(password, salt, 64);
+    return storedKey.length === hashedKey.length && timingSafeEqual(storedKey, hashedKey);
+  } catch {
+    return false;
+  }
 }

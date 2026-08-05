@@ -1,9 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { jobSchema } from "@/utils/validations/job";
 
 export default function PostJobView() {
+  const router = useRouter();
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [generalError, setGeneralError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -43,17 +45,20 @@ export default function PostJobView() {
       });
 
       if (!response.ok) {
-        if (response.status === 400) {
-          const errData = await response.json();
-          if (errData.errors) {
-            setErrors(errData.errors);
-            return;
-          }
+        const errData = await response.json().catch(() => ({}));
+        if (errData.errors) {
+          setErrors(errData.errors);
+          return;
         }
-        throw new Error("Failed to post job. Please try again.");
+        if (response.status === 401) {
+          router.push(`/auth/signin?callbackUrl=${encodeURIComponent("/jobs/post")}`);
+          return;
+        }
+        throw new Error(errData.error || "Failed to post job. Please try again.");
       }
 
-      window.location.href = "/";
+      router.push("/");
+      router.refresh();
     } catch (error) {
       setGeneralError(
         error instanceof Error ? error.message : "An unexpected error occurred."

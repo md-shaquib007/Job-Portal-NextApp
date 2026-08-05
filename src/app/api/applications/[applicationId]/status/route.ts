@@ -6,12 +6,12 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ applicationId: string }> },
 ) {
-  const session = await getSession();
-  if (!session?.user?.id) {
-    return apiError("Unauthorized", 401);
-  }
-
   try {
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return apiError("Unauthorized", 401);
+    }
+
     const { applicationId } = await params;
     const body = await request.json();
     const result = await ApplicationController.updateStatus(

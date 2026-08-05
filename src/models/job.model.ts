@@ -50,7 +50,7 @@ export const JobModel = {
       prisma.job.count({ where }),
     ]);
 
-    return { jobs, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+    return { jobs, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) };
   },
 
   findById(id: string) {

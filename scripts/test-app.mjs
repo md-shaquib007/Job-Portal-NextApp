@@ -85,11 +85,18 @@ async function runTests() {
   }
 
   // --- Public pages ---
-  const publicPages = ["/", "/jobs", "/auth/signin", "/auth/signup", "/jobs/post"];
+  const publicPages = ["/", "/jobs", "/auth/signin", "/auth/signup"];
   for (const path of publicPages) {
     const res = await request(path);
     record(`GET ${path}`, res.status === 200, `status ${res.status}`);
   }
+
+  const postGuest = await request("/jobs/post");
+  record(
+    "GET /jobs/post (guest redirects)",
+    postGuest.status === 307 || postGuest.status === 302,
+    `status ${postGuest.status}`,
+  );
 
   // --- Protected page (unauthenticated) ---
   const dashUnauth = await request("/dashboard");

@@ -22,7 +22,8 @@ export default async function JobsPage({
 
   const location = params.location as string | undefined;
 
-  const page = params.page ? parseInt(params.page as string, 10) : 1;
+  const parsedPage = params.page ? Number.parseInt(params.page as string, 10) : 1;
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
 
 

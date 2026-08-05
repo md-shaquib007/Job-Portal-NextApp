@@ -16,7 +16,7 @@ export default function ApplyButton({ jobId, hasApplied = false }: { jobId: stri
 
   const handleApply = async () => {
     if (!session) {
-      router.push("/auth/signin");
+      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/jobs/${jobId}`)}`);
       return;
     }
 
@@ -27,13 +27,16 @@ export default function ApplyButton({ jobId, hasApplied = false }: { jobId: stri
     try {
       const response = await fetch(`/api/jobs/${jobId}/apply`, {
         method: "POST",
+        credentials: "include",
       });
 
       if (!response.ok) {
-        const message =
-          response.status === 400
+        const data = await response.json().catch(() => null);
+        const message = response.status === 401
+          ? "Your session has expired. Please sign in again."
+          : response.status === 400
             ? "You have already applied for this job."
-            : "Failed to apply for the job.";
+            : data?.error || "Failed to apply for the job.";
         throw new Error(message);
       }
 

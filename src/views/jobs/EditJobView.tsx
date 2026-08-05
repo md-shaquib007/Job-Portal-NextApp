@@ -50,9 +50,13 @@ export default function EditJobView({ job }: { job: JobData }) {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
+        const errData = await response.json().catch(() => ({}));
         if (errData.errors) {
           setErrors(errData.errors);
+          return;
+        }
+        if (response.status === 401) {
+          router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/jobs/${job.id}/edit`)}`);
           return;
         }
         throw new Error(errData.error || "Failed to update job.");

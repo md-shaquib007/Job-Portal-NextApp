@@ -30,7 +30,7 @@ export const authOptions: AuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: credentials.email.trim().toLowerCase() },
         });
 
         if (!user?.password) return null;
@@ -47,6 +47,7 @@ export const authOptions: AuthOptions = {
     ...(isGitHubAuthEnabled()
       ? [
           GitHub({
+            // GitHub uses OAuth 2.0; credentials login remains available as a separate fallback.
             clientId: process.env.GITHUB_CLIENT_ID!,
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
           }),

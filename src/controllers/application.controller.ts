@@ -25,14 +25,29 @@ export const ApplicationController = {
     if (!job) {
       return { ok: false, status: 404, message: "Job Not Found" };
     }
+    if (job.postedById === userId) {
+      return { ok: false, status: 400, message: "You cannot apply to your own job." };
+    }
 
     const existing = await ApplicationModel.findExisting(jobId, userId);
     if (existing) {
       return { ok: false, status: 400, message: "You have already applied for this job" };
     }
 
-    const application = await ApplicationModel.create(jobId, userId);
-    return { ok: true, status: 200, data: application };
+    try {
+      const application = await ApplicationModel.create(jobId, userId);
+      return { ok: true, status: 200, data: application };
+    } catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return { ok: false, status: 400, message: "You have already applied for this job" };
+      }
+      throw error;
+    }
   },
 
   async updateStatus(

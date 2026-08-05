@@ -3,12 +3,12 @@ import { JobController } from "@/controllers/job.controller";
 import { apiError, apiSuccess, handleApiError } from "@/utils/api-response";
 
 export async function POST(request: Request) {
-  const session = await getSession();
-  if (!session?.user?.id) {
-    return apiError("Unauthorized", 401);
-  }
-
   try {
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return apiError("Unauthorized", 401);
+    }
+
     const body = await request.json();
     const result = await JobController.create(body, session.user.id);
 

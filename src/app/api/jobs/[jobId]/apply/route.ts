@@ -6,12 +6,12 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ jobId: string }> },
 ) {
-  const session = await getSession();
-  if (!session?.user?.id) {
-    return apiError("Unauthorized", 401);
-  }
-
   try {
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return apiError("Unauthorized", 401);
+    }
+
     const { jobId } = await params;
     const result = await ApplicationController.apply(jobId, session.user.id);
 

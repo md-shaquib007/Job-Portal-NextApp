@@ -26,12 +26,24 @@ export const AuthController = {
       return { ok: false, status: 400, error: "A user with this email already exists." };
     }
 
-    const user = await UserModel.create(parsed.data);
-    return {
-      ok: true,
-      status: 201,
-      data: { message: "Registration successful.", userId: user.id },
-    };
+    try {
+      const user = await UserModel.create(parsed.data);
+      return {
+        ok: true,
+        status: 201,
+        data: { message: "Registration successful.", userId: user.id },
+      };
+    } catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        return { ok: false, status: 400, error: "A user with this email already exists." };
+      }
+      throw error;
+    }
   },
 
   getProviderStatus() {

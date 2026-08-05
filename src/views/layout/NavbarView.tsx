@@ -5,7 +5,7 @@ import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <nav className="bg-white shadow-sm">
@@ -34,7 +34,9 @@ export default function Navbar() {
               Browse Jobs
             </Link>
 
-            {session ? (
+            {status === "loading" ? (
+              <div className="h-9 w-24 animate-pulse rounded-md bg-gray-100" aria-label="Loading account" />
+            ) : session ? (
               <>
                 <Link
                   href="/jobs/post"
@@ -52,7 +54,7 @@ export default function Navbar() {
 
                 <button
                   type="button"
-                  onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                   className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-sm text-sm font-medium"
                 >
                   Sign Out
