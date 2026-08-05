@@ -23,12 +23,14 @@ export default function JobListView({
   page,
   totalPages,
   filters,
+  error,
 }: {
   jobs: Job[];
   total: number;
   page: number;
   totalPages: number;
   filters: Filters;
+  error?: string;
 }) {
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();
@@ -76,7 +78,12 @@ export default function JobListView({
         </form>
       </div>
 
-      {jobs.length === 0 ? (
+      {error ? (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-6 py-12 text-center">
+          <h2 className="text-lg font-semibold text-amber-900">Unable to load jobs</h2>
+          <p className="mt-2 text-amber-800">{error}</p>
+        </div>
+      ) : jobs.length === 0 ? (
         <p className="text-center text-gray-500 py-12">No jobs found. Try different filters or post a job.</p>
       ) : (
         <div className="grid gap-6">

@@ -6,8 +6,8 @@ import EditJobView from "@/views/jobs/EditJobView";
 export const dynamic = "force-dynamic";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
-  const userId = await requireUserId();
   const { id } = await params;
+  const userId = await requireUserId(`/jobs/${id}/edit`);
   const job = await JobController.getById(id);
 
   if (!job) notFound();

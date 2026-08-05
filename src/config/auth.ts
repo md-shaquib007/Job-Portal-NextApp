@@ -9,6 +9,13 @@ import { ensureAuthEnv, isGitHubAuthEnabled, isProduction } from "@/config/env";
 
 ensureAuthEnv();
 
+// Secure cookies must match the actual URL. A production build served over
+// plain HTTP (for example, local `next start`) cannot send Secure cookies.
+const authBaseUrl = process.env.NEXTAUTH_URL?.trim();
+const useSecureCookies = authBaseUrl
+  ? authBaseUrl.startsWith("https://")
+  : isProduction();
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   secret: process.env.NEXTAUTH_SECRET,
@@ -18,7 +25,7 @@ export const authOptions: AuthOptions = {
         allowDangerousEmailAccountLinking: true,
       }),
   debug: process.env.NODE_ENV === "development",
-  useSecureCookies: isProduction(),
+  useSecureCookies,
   providers: [
     CredentialsProvider({
       name: "Credentials",

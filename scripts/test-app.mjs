@@ -6,6 +6,7 @@
 const BASE = process.env.TEST_BASE_URL || "http://localhost:3000";
 
 let cookies = [];
+let signupAttempt = 0;
 const results = [];
 
 function record(name, passed, detail = "") {
@@ -67,12 +68,25 @@ async function signInWithCredentials(email, password) {
   return signInRes;
 }
 
+async function signUpWithCredentials(payload) {
+  signupAttempt += 1;
+  return request("/api/auth/signup", {
+    method: "POST",
+    headers: {
+      "X-Forwarded-For": `203.0.113.${signupAttempt}`,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
 async function runTests() {
   console.log(`\nTesting Job Board at ${BASE}\n${"=".repeat(50)}\n`);
 
   const testEmail = `test_${Date.now()}@example.com`;
   const testPassword = "testPass1";
   const testName = "Test User";
+  const applicantEmail = `applicant_${Date.now()}@example.com`;
+  const applicantPassword = "applicantPass1";
 
   // --- Static checks ---
   try {
@@ -121,17 +135,11 @@ async function runTests() {
   );
 
   // --- Signup validation ---
-  const badSignup = await request("/api/auth/signup", {
-    method: "POST",
-    body: JSON.stringify({ name: "A", email: "bad", password: "123" }),
-  });
+  const badSignup = await signUpWithCredentials({ name: "A", email: "bad", password: "123" });
   record("POST /api/auth/signup (invalid data → 400)", badSignup.status === 400);
 
   // --- Signup success ---
-  const signupRes = await request("/api/auth/signup", {
-    method: "POST",
-    body: JSON.stringify({ name: testName, email: testEmail, password: testPassword }),
-  });
+  const signupRes = await signUpWithCredentials({ name: testName, email: testEmail, password: testPassword });
   const signupData = await signupRes.json();
   record(
     "POST /api/auth/signup (valid user → 201)",
@@ -140,10 +148,7 @@ async function runTests() {
   );
 
   // --- Duplicate signup ---
-  const dupSignup = await request("/api/auth/signup", {
-    method: "POST",
-    body: JSON.stringify({ name: testName, email: testEmail, password: testPassword }),
-  });
+  const dupSignup = await signUpWithCredentials({ name: testName, email: testEmail, password: testPassword });
   record("POST /api/auth/signup (duplicate → 400)", dupSignup.status === 400);
 
   // --- Unauthorized job post ---
@@ -216,6 +221,21 @@ async function runTests() {
     record(`GET /jobs/${jobId}`, jobDetail.status === 200);
 
     // --- Apply to job ---
+    const applicantSignup = await signUpWithCredentials({
+      name: "Applicant User",
+      email: applicantEmail,
+      password: applicantPassword,
+    });
+    record("POST /api/auth/signup (applicant â†’ 201)", applicantSignup.status === 201);
+
+    cookies = [];
+    const applicantSignIn = await signInWithCredentials(applicantEmail, applicantPassword);
+    record(
+      "POST applicant credentials sign-in",
+      applicantSignIn.status === 200 || applicantSignIn.status === 302,
+      `status ${applicantSignIn.status}`,
+    );
+
     const applyRes = await request(`/api/jobs/${jobId}/apply`, { method: "POST" });
     record("POST /api/jobs/:id/apply (first time → 200)", applyRes.ok, applyRes.status.toString());
 
