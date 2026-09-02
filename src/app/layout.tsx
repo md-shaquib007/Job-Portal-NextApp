@@ -24,7 +24,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession();
+  let session = null;
+  try {
+    session = await getSession();
+  } catch (error) {
+    console.warn("[RootLayout] Could not retrieve session:", error);
+  }
 
   return (
     <html lang="en">

@@ -7,8 +7,22 @@ export const dynamic = "force-dynamic";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const userId = await requireUserId(`/jobs/${id}/edit`);
-  const job = await JobController.getById(id);
+  let userId = "";
+  try {
+    userId = await requireUserId(`/jobs/${id}/edit`);
+  } catch (error) {
+    if (error && typeof error === "object" && "digest" in error && String(error.digest).startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
+    redirect(`/auth/signin?callbackUrl=${encodeURIComponent(`/jobs/${id}/edit`)}`);
+  }
+
+  let job = null;
+  try {
+    job = await JobController.getById(id);
+  } catch {
+    notFound();
+  }
 
   if (!job) notFound();
   if (job.postedById !== userId) redirect(`/jobs/${id}`);

@@ -9,9 +9,9 @@ export default async function JobsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const q = typeof params.q === "string" ? params.q : undefined;
-  const type = typeof params.type === "string" ? params.type : undefined;
-  const location = typeof params.location === "string" ? params.location : undefined;
+  const q = typeof params.q === "string" && params.q.trim() ? params.q.trim() : undefined;
+  const type = typeof params.type === "string" && params.type.trim() ? params.type.trim() : undefined;
+  const location = typeof params.location === "string" && params.location.trim() ? params.location.trim() : undefined;
   const parsedPage = typeof params.page === "string"
     ? Number.parseInt(params.page, 10)
     : 1;
