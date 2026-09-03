@@ -97,9 +97,13 @@ npx prisma generate
 npm run db:seed
 ```
 
-Demo Credentials:
-- **Employer Account**: `employer@demo.com` | `demoPass1`
-- **Job Seeker Account**: `seeker@demo.com` | `demoPass1`
+### 🔑 Demo Tour Credentials (All 3 Roles)
+
+| Role / Account Type | Email Address | Password | Tour Highlights & Capabilities |
+| :--- | :--- | :--- | :--- |
+| 👑 **Admin Account** | `admin@demo.com` | `demoPass1` | Full platform moderation & system overview |
+| 👔 **Employer Account** | `employer@demo.com` | `demoPass1` | Post & edit jobs, review candidate cover letters & resumes (*Accept / Reject*) |
+| 👤 **Job Seeker Account** | `seeker@demo.com` | `demoPass1` | Search jobs with filters, apply with cover letter, track & withdraw applications |
 
 ### 4. Run Development Server
 
