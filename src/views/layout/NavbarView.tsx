@@ -38,12 +38,14 @@ export default function Navbar() {
               <div className="h-9 w-24 animate-pulse rounded-md bg-gray-100" aria-label="Loading account" />
             ) : session ? (
               <>
-                <Link
-                  href="/jobs/post"
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Post a Job
-                </Link>
+                {session.user.role === "EMPLOYER" && (
+                  <Link
+                    href="/jobs/post"
+                    className="text-indigo-600 font-semibold hover:text-indigo-800 px-3 py-2 rounded-md text-sm"
+                  >
+                    + Post a Job
+                  </Link>
+                )}
 
                 <Link
                   href="/dashboard"
@@ -51,6 +53,10 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
+
+                <span className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full font-medium capitalize">
+                  {session.user.role === "EMPLOYER" ? "Employer" : "Job Seeker"}
+                </span>
 
                 <button
                   type="button"

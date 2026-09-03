@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  JOB_SEEKER
+  EMPLOYER
+}
+
 enum ApplicationStatus {
   Pending
   Accepted
@@ -56,6 +61,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          Role      @default(JOB_SEEKER)
   account       Account[]
   session       Session[]
 

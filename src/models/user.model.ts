@@ -14,6 +14,7 @@ export const UserModel = {
         name: data.name,
         email: data.email,
         password: hashPassword(data.password),
+        role: data.role || "JOB_SEEKER",
       },
     });
   },

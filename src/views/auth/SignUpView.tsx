@@ -8,6 +8,7 @@ export default function SignUpForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"JOB_SEEKER" | "EMPLOYER">("JOB_SEEKER");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function SignUpForm() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, role }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -99,8 +100,23 @@ export default function SignUpForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-950 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm font-medium transition-all duration-200"
-                placeholder="At least 8 chars, 1 letter & 1 number"
+              placeholder="At least 8 chars, 1 letter & 1 number"
             />
+          </div>
+          <div>
+            <label htmlFor="role" className="block text-sm font-semibold text-gray-700 mb-1">
+              I want to:
+            </label>
+            <select
+              id="role"
+              name="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value as "JOB_SEEKER" | "EMPLOYER")}
+              className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-950 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm font-medium transition-all duration-200"
+            >
+              <option value="JOB_SEEKER">Find a job (Job Seeker)</option>
+              <option value="EMPLOYER">Post jobs & hire (Employer)</option>
+            </select>
           </div>
         </div>
 

@@ -15,6 +15,7 @@ export const signUpSchema = z.object({
     .min(8, { message: "Password must be at least 8 characters long." })
     .regex(/[A-Za-z]/, { message: "Password must contain at least one letter." })
     .regex(/[0-9]/, { message: "Password must contain at least one number." }),
+  role: z.enum(["JOB_SEEKER", "EMPLOYER"]).default("JOB_SEEKER"),
 });
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
