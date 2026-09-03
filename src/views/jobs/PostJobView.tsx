@@ -21,6 +21,8 @@ export default function PostJobView() {
       company: formData.get("company") as string,
       location: formData.get("location") as string,
       type: formData.get("type") as string,
+      category: (formData.get("category") as string) || "Technology",
+      experienceLevel: (formData.get("experienceLevel") as string) || "Mid-Level",
       description: formData.get("description") as string,
       salary: formData.get("salary") as string,
     };
@@ -183,6 +185,44 @@ export default function PostJobView() {
                 {errors.type[0]}
               </p>
             )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
+              <select
+                name="category"
+                id="category"
+                defaultValue="Technology"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="Technology">Technology</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Design">Design</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Finance">Finance</option>
+                <option value="Sales">Sales</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700">
+                Experience Level
+              </label>
+              <select
+                name="experienceLevel"
+                id="experienceLevel"
+                defaultValue="Mid-Level"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="Entry-Level">Entry-Level</option>
+                <option value="Mid-Level">Mid-Level</option>
+                <option value="Senior">Senior</option>
+                <option value="Executive">Executive</option>
+              </select>
+            </div>
           </div>
 
           <div>

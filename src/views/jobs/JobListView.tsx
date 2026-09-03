@@ -102,8 +102,10 @@ export default function JobListView({
                 {job.salary && <span className="text-lg font-semibold text-gray-900">{job.salary}</span>}
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Posted by {job.postedBy.name}</span>
-                <Link href={`/jobs/${job.id}`} className="text-indigo-600 hover:text-indigo-800">View details</Link>
+                <span className="text-sm text-gray-500">Posted by {job.postedBy?.name ?? "Employer"}</span>
+                <Link href={`/jobs/${job.id}`} className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">
+                  View Details &rarr;
+                </Link>
               </div>
             </div>
           ))}
