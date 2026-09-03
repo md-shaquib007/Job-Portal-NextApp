@@ -37,10 +37,14 @@ export const JobController = {
     jobId: string,
     body: unknown,
     userId: string,
+    userRole?: string | null,
   ): Promise<ControllerResult<Awaited<ReturnType<typeof JobModel.update>>>> {
     const job = await JobModel.findById(jobId);
     if (!job) return { ok: false, status: 404, message: "Job not found." };
-    if (job.postedById !== userId) {
+
+    const isOwner = job.postedById === userId;
+    const isAdmin = userRole === "ADMIN";
+    if (!isOwner && !isAdmin) {
       return { ok: false, status: 403, message: "You can only edit your own jobs." };
     }
 
@@ -57,10 +61,17 @@ export const JobController = {
     return { ok: true, status: 200, data: updated };
   },
 
-  async delete(jobId: string, userId: string): Promise<ControllerResult<{ id: string }>> {
+  async delete(
+    jobId: string,
+    userId: string,
+    userRole?: string | null,
+  ): Promise<ControllerResult<{ id: string }>> {
     const job = await JobModel.findById(jobId);
     if (!job) return { ok: false, status: 404, message: "Job not found." };
-    if (job.postedById !== userId) {
+
+    const isOwner = job.postedById === userId;
+    const isAdmin = userRole === "ADMIN";
+    if (!isOwner && !isAdmin) {
       return { ok: false, status: 403, message: "You can only delete your own jobs." };
     }
 

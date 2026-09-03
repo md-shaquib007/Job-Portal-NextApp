@@ -14,7 +14,7 @@ export async function PATCH(
 
     const { jobId } = await params;
     const body = await request.json();
-    const result = await JobController.update(jobId, body, session.user.id);
+    const result = await JobController.update(jobId, body, session.user.id, session.user.role);
 
     if (!result.ok) {
       return apiError(result.message ?? "Request failed", result.status, {
@@ -39,7 +39,7 @@ export async function DELETE(
     }
 
     const { jobId } = await params;
-    const result = await JobController.delete(jobId, session.user.id);
+    const result = await JobController.delete(jobId, session.user.id, session.user.role);
 
     if (!result.ok) {
       return apiError(result.message ?? "Request failed", result.status);
