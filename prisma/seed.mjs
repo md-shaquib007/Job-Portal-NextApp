@@ -11,6 +11,17 @@ function hashPassword(password) {
 }
 
 async function main() {
+  await prisma.user.upsert({
+    where: { email: "admin@demo.com" },
+    update: { role: "ADMIN" },
+    create: {
+      name: "Platform Admin",
+      email: "admin@demo.com",
+      password: hashPassword("demoPass1"),
+      role: "ADMIN",
+    },
+  });
+
   const employer = await prisma.user.upsert({
     where: { email: "employer@demo.com" },
     update: { role: "EMPLOYER" },
@@ -59,6 +70,7 @@ async function main() {
   });
 
   console.log("Seed complete:");
+  console.log("  Admin:    admin@demo.com / demoPass1");
   console.log("  Employer: employer@demo.com / demoPass1");
   console.log("  Seeker:   seeker@demo.com / demoPass1");
 }

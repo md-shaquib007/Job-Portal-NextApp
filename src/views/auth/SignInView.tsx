@@ -116,28 +116,36 @@ export default function SignInForm({ githubEnabled = false }: { githubEnabled?: 
       {/* Recruiter / Reviewer 1-Click Demo Credentials Card */}
       <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4">
         <p className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2 text-center">
-          ⚡ 1-Click Recruiter Demo Login
+          ⚡ 1-Click Demo Account Login (All Roles)
         </p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-1.5">
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleDemoLogin("admin@demo.com", "demoPass1")}
+            className="px-2.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[11px] font-bold shadow-sm transition-all text-center disabled:opacity-50"
+          >
+            👑 Admin
+          </button>
           <button
             type="button"
             disabled={loading}
             onClick={() => handleDemoLogin("employer@demo.com", "demoPass1")}
-            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all text-center disabled:opacity-50"
+            className="px-2.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold shadow-sm transition-all text-center disabled:opacity-50"
           >
-            👔 Employer Account
+            👔 Employer
           </button>
           <button
             type="button"
             disabled={loading}
             onClick={() => handleDemoLogin("seeker@demo.com", "demoPass1")}
-            className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all text-center disabled:opacity-50"
+            className="px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold shadow-sm transition-all text-center disabled:opacity-50"
           >
-            👤 Candidate Account
+            👤 Candidate
           </button>
         </div>
-        <p className="text-[11px] text-indigo-600 text-center mt-2 font-medium">
-          Employer: <code className="bg-white/80 px-1 py-0.5 rounded">employer@demo.com</code> | Candidate: <code className="bg-white/80 px-1 py-0.5 rounded">seeker@demo.com</code>
+        <p className="text-[11px] text-indigo-700 text-center mt-2 font-medium">
+          Pass: <code className="bg-white/80 px-1 py-0.5 rounded font-mono">demoPass1</code> | Admin: <code className="bg-white/80 px-1 py-0.5 rounded font-mono">admin@demo.com</code>
         </p>
       </div>
 
