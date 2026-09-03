@@ -1,337 +1,131 @@
-﻿# Job Board
+# 💼 Enterprise Job Board Platform
 
-A full-stack job board built with Next.js, TypeScript, Prisma, PostgreSQL, NextAuth.js, and Tailwind CSS.
+![Hero Preview](./public/hero-preview.jpg)
 
-Users can create accounts, browse and search jobs, post and edit job listings, apply to jobs, and manage application statuses from a dashboard.
+<div align="center">
 
-## Features
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-5.22.0-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon_Cloud-4169E1?style=for-the-badge&logo=postgresql)](https://neon.tech/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.style=for-the-badge)]()
 
-- Email/password authentication with secure password hashing.
-- Optional GitHub OAuth 2.0 alternate sign-in.
-- Protected dashboard, job-posting, and job-editing routes.
-- Job search by keyword, type, and location with pagination.
-- Job creation, editing, and deletion.
-- One application per user per job.
-- Employers can accept or reject applicants.
-- Zod validation on client and server flows.
-- Prisma migrations for PostgreSQL.
-- Health endpoint at `/api/health`.
-- Auth diagnostics at `/api/auth/status`.
-- Responsive UI with loading, error, and recovery states.
-- End-to-end integration tests for auth, jobs, applications, and protected routes.
+</div>
 
-## Tech stack
+---
 
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- PostgreSQL
-- Prisma ORM
-- NextAuth.js v4 with Prisma Adapter
-- Zod
-- Tailwind CSS v4
-- date-fns
+## 🌟 Key Features
 
-## Requirements
+- 🔐 **Role-Based Access Control (RBAC)**: Strict role segregation for **JOB_SEEKER**, **EMPLOYER**, and **ADMIN** users.
+- 🏢 **Employer Dashboard**: Real-time analytics cards (*Posted Jobs*, *Total Applicants*, *Pending Reviews*, *Accepted Hires*), candidate cover letter previews, resume links, and 1-click status management (*Accept* / *Reject*).
+- 📄 **Job Seeker Experience**: Interactive candidate application modal with cover letter & portfolio attachments, status timeline tracking, and application withdrawal options.
+- 🔍 **Advanced Search & Filtering**: Multi-field search by keyword, category, job type, experience level, location, and active status.
+- 🔖 **Saved Jobs & Bookmarking**: Save/bookmark open roles to review or apply later.
+- ⚡ **Resilient Authentication**: NextAuth.js v4 with salted `scrypt` password hashing and optional GitHub OAuth 2.0 fallback.
+- 🌐 **Dynamic OpenGraph SEO**: Dynamic `generateMetadata` implementation generates custom social media preview cards for job links.
+- 🛠️ **Production-Ready & Self-Healing**: Vercel dynamic host resolution, database health checks at `/api/health`, and comprehensive integration test coverage.
 
-- Node.js 20 or newer
-- npm
-- PostgreSQL 14 or newer, or a hosted PostgreSQL provider such as Neon, Supabase, or Railway
+---
 
-## Getting started
+## 🔐 Role-Based Access Control (RBAC) Matrix
 
-### 1. Install dependencies
+| Feature / Permission | Guest | Job Seeker | Employer | Admin |
+| :--- | :---: | :---: | :---: | :---: |
+| **Browse / Search Jobs** | ✅ | ✅ | ✅ | ✅ |
+| **View Job Details & Dynamic SEO** | ✅ | ✅ | ✅ | ✅ |
+| **Bookmark / Save Job** | ❌ (Sign In) | ✅ | ❌ | ✅ |
+| **Apply with Cover Letter & Resume** | ❌ (Sign In) | ✅ | ❌ (Forbidden 403) | ❌ |
+| **Withdraw Active Application** | ❌ | ✅ (Own Apps) | ❌ | ✅ |
+| **Post Job Opening** | ❌ (Sign In) | ❌ (Redirect + Banner) | ✅ | ✅ |
+| **Edit / Delete Job Opening** | ❌ | ❌ | ✅ (Own Jobs) | ✅ |
+| **Manage Applicants (Accept / Reject)** | ❌ | ❌ | ✅ (Own Jobs) | ✅ |
+| **Tailored Dashboard Overview** | ❌ | ✅ (Seeker View) | ✅ (Employer View) | ✅ (Admin View) |
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 16 (App Router & Turbopack)](https://nextjs.org/)
+- **UI Library**: [React 19](https://react.dev/) & [Tailwind CSS v4](https://tailwindcss.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database & ORM**: [PostgreSQL (Neon Cloud)](https://neon.tech/) & [Prisma ORM](https://www.prisma.io/)
+- **Authentication**: [NextAuth.js v4](https://next-auth.js.org/) (JWT Strategy + Prisma Adapter)
+- **Validation**: [Zod](https://zod.dev/)
+- **Dates & Helpers**: `date-fns`
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone & Install Dependencies
 
 ```bash
+git clone https://github.com/md-shaquib007/Job-Portal-NextApp.git
+cd job-posting-website
 npm install
 ```
 
-### 2. Configure environment variables
+### 2. Configure Environment Variables
 
-Copy the example file:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Set the required values:
+Create a `.env` file in the project root:
 
 ```env
-DATABASE_URL="postgresql://username:password@localhost:5432/jobportal?schema=public"
+# Database connection string (PostgreSQL / Neon)
+DATABASE_URL="postgresql://neondb_owner:YOUR_PASSWORD@ep-empty-lab-atg0s3ut.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require"
+
+# NextAuth Configuration
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="a-random-secret-at-least-32-characters-long"
-```
 
-Hosted PostgreSQL connection strings commonly require:
-
-```text
-?sslmode=require
-```
-
-Generate a secret with:
-
-```bash
-openssl rand -base64 32
-```
-
-### 3. Optional: enable GitHub OAuth 2.0
-
-Set both variables to show the alternate GitHub sign-in button:
-
-```env
+# Optional: GitHub OAuth 2.0
 GITHUB_CLIENT_ID="your-github-client-id"
 GITHUB_CLIENT_SECRET="your-github-client-secret"
 ```
 
-Create a GitHub OAuth App with this local callback URL:
-
-```text
-http://localhost:3000/api/auth/callback/github
-```
-
-For production:
-
-```text
-https://your-domain.com/api/auth/callback/github
-```
-
-Check the provider configuration at:
-
-```text
-http://localhost:3000/api/auth/status
-```
-
-The response should include `"github": true` when OAuth is configured correctly.
-
-### 4. Apply database migrations
+### 3. Sync Database & Seed Demo Data
 
 ```bash
-npx prisma migrate deploy
-```
+# Push database schema to PostgreSQL
+npx prisma db push
 
-For local schema development:
-
-```bash
-npx prisma migrate dev --name describe-your-change
-```
-
-Regenerate Prisma Client when needed:
-
-```bash
+# Generate Prisma Client
 npx prisma generate
-```
 
-### 5. Optional: seed demo data
-
-```bash
+# Optional: Seed demo accounts and jobs
 npm run db:seed
 ```
 
-The seed creates:
+Demo Credentials:
+- **Employer Account**: `employer@demo.com` | `demoPass1`
+- **Job Seeker Account**: `seeker@demo.com` | `demoPass1`
 
-| Role | Email | Password |
-|---|---|---|
-| Employer | `employer@demo.com` | `demoPass1` |
-| Seeker | `seeker@demo.com` | `demoPass1` |
-
-It also creates a demo job and application.
-
-## Running the app
-
-### Development
+### 4. Run Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Production locally
+---
 
-```bash
-npm run build
-npm start
-```
-
-For a production build that also deploys migrations:
+## 🧪 Testing & Verification
 
 ```bash
-npm run build:prod
-npm start
-```
-
-Do not run two servers on port 3000 at the same time.
-
-## Testing and validation
-
-Validate environment variables:
-
-```bash
-npm run validate:env
-```
-
-Run linting:
-
-```bash
-npm run lint
-```
-
-Run TypeScript validation:
-
-```bash
+# Type check
 npx tsc --noEmit
-```
 
-Run the production build:
-
-```bash
+# Production build
 npm run build
-```
 
-Run the full integration suite:
-
-```text
-Terminal 1: npm start
-Terminal 2: npm test
-```
-
-The integration suite verifies public pages, protected redirects, signup, duplicate signup handling, credentials login, dashboard access, job creation/listing/detail, validation, applications, duplicate applications, unauthenticated access, and 404 behavior.
-
-The suite requires a running server on port 3000 and a reachable PostgreSQL database. Use another server URL with:
-
-```powershell
-$env:TEST_BASE_URL="http://localhost:3001"
+# Integration tests (requires server running on port 3000)
 npm test
 ```
 
-## Health checks
+---
 
-Database health:
+## 📄 License
 
-```text
-GET /api/health
-```
-
-Healthy response:
-
-```json
-{
-  "status": "ok",
-  "database": "connected"
-}
-```
-
-Auth/provider status:
-
-```text
-GET /api/auth/status
-```
-
-## Application structure
-
-```text
-src/
-â”œâ”€â”€ app/                    Next.js pages, routes, and API handlers
-â”œâ”€â”€ config/                 Auth, database, environment, and session setup
-â”œâ”€â”€ controllers/            Business rules and validation orchestration
-â”œâ”€â”€ models/                 Prisma data-access functions
-â”œâ”€â”€ providers/              React providers
-â”œâ”€â”€ types/                  Shared TypeScript types
-â”œâ”€â”€ utils/                  API responses, crypto, rate limiting, and schemas
-â””â”€â”€ views/                  UI components
-
-prisma/
-â”œâ”€â”€ migrations/             Versioned database migrations
-â”œâ”€â”€ schema.prisma           Database schema
-â””â”€â”€ seed.mjs                Demo data seeder
-```
-
-Typical request flow:
-
-```text
-Browser â†’ app route/API route â†’ controller â†’ model â†’ PostgreSQL
-                         â†“
-                       view
-```
-
-## Authentication notes
-
-- Credentials sessions use JWT strategy with a 30-day maximum age.
-- Passwords are stored as salted scrypt hashes.
-- GitHub OAuth 2.0 is enabled only when both GitHub variables are present.
-- Cookie security follows the protocol in `NEXTAUTH_URL`.
-- Protected routes preserve the original destination after sign-in.
-- Production OAuth account-linking protections remain enabled.
-
-## Troubleshooting
-
-### `npm test` says `Server reachable â€” fetch failed`
-
-Start the app first:
-
-```bash
-npm start
-```
-
-Then run in a second terminal:
-
-```bash
-npm test
-```
-
-### `EADDRINUSE: port 3000 already in use`
-
-Reuse the existing server, or stop it before starting another:
-
-```powershell
-$connection = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue
-if ($connection) {
-  Stop-Process -Id $connection.OwningProcess -Force
-}
-```
-
-### Prisma `EPERM` while renaming the Windows query engine
-
-A running Next.js process is locking Prisma's generated engine. Stop the app server, then run:
-
-```bash
-npm run build
-```
-
-Start the server only after the build completes.
-
-### `/api/health` returns `503`
-
-Check that `DATABASE_URL` is correct, the provider is online, cloud URLs include SSL settings, and migrations are applied:
-
-```bash
-npx prisma migrate deploy
-```
-
-### Protected routes repeatedly ask for sign-in
-
-Make sure `NEXTAUTH_URL` exactly matches the browser URL, including protocol and port:
-
-```env
-NEXTAUTH_URL="http://localhost:3000"
-```
-
-Restart the server after changing environment variables and clear old `next-auth` cookies or use a private browser window.
-
-## Deployment checklist
-
-- Set `DATABASE_URL` for the production PostgreSQL database.
-- Set a unique `NEXTAUTH_SECRET` with at least 32 characters.
-- Set `NEXTAUTH_URL` to the exact HTTPS deployment URL.
-- Add GitHub OAuth credentials if OAuth2 sign-in is required.
-- Update the GitHub OAuth callback URL for production.
-- Run Prisma migrations.
-- Confirm `/api/health` reports `database: connected`.
-- Confirm `/api/auth/status` reports the expected providers.
-- Run `npm run build` before deployment.
-- Never commit `.env`, OAuth secrets, database credentials, or generated secrets.
-
-## License
-
-This project is private unless a license is added by the project owner.
-
+This project is licensed under the MIT License. Created by [Md Shaquib](https://github.com/md-shaquib007).
