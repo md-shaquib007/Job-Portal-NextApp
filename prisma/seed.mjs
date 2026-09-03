@@ -13,21 +13,23 @@ function hashPassword(password) {
 async function main() {
   const employer = await prisma.user.upsert({
     where: { email: "employer@demo.com" },
-    update: {},
+    update: { role: "EMPLOYER" },
     create: {
       name: "Demo Employer",
       email: "employer@demo.com",
       password: hashPassword("demoPass1"),
+      role: "EMPLOYER",
     },
   });
 
   const seeker = await prisma.user.upsert({
     where: { email: "seeker@demo.com" },
-    update: {},
+    update: { role: "JOB_SEEKER" },
     create: {
       name: "Demo Seeker",
       email: "seeker@demo.com",
       password: hashPassword("demoPass1"),
+      role: "JOB_SEEKER",
     },
   });
 

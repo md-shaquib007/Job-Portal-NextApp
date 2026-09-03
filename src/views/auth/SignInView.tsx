@@ -75,14 +75,69 @@ export default function SignInForm({ githubEnabled = false }: { githubEnabled?: 
 
   const displayError = getErrorMessage();
 
+  const handleDemoLogin = async (demoEmail: string, demoPass: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPass);
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await signIn("credentials", {
+        email: demoEmail,
+        password: demoPass,
+        redirect: false,
+        callbackUrl,
+      });
+
+      if (!res?.ok || res.error) {
+        throw new Error("Demo login failed.");
+      }
+
+      router.push(callbackUrl);
+      router.refresh();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Sign in failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 mx-4">
+    <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 mx-4">
       <div className="text-center">
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
           Welcome to JobList
         </h2>
         <p className="mt-2 text-sm text-gray-600">
           Sign in to post jobs and apply for opportunities
+        </p>
+      </div>
+
+      {/* Recruiter / Reviewer 1-Click Demo Credentials Card */}
+      <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4">
+        <p className="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2 text-center">
+          ⚡ 1-Click Recruiter Demo Login
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleDemoLogin("employer@demo.com", "demoPass1")}
+            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all text-center disabled:opacity-50"
+          >
+            👔 Employer Account
+          </button>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleDemoLogin("seeker@demo.com", "demoPass1")}
+            className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all text-center disabled:opacity-50"
+          >
+            👤 Candidate Account
+          </button>
+        </div>
+        <p className="text-[11px] text-indigo-600 text-center mt-2 font-medium">
+          Employer: <code className="bg-white/80 px-1 py-0.5 rounded">employer@demo.com</code> | Candidate: <code className="bg-white/80 px-1 py-0.5 rounded">seeker@demo.com</code>
         </p>
       </div>
 
@@ -100,7 +155,7 @@ export default function SignInForm({ githubEnabled = false }: { githubEnabled?: 
         </div>
       )}
 
-      <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+      <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
             Email Address
