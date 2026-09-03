@@ -22,9 +22,15 @@ export const ApplicationModel = {
     });
   },
 
-  create(jobId: string, userId: string) {
+  create(jobId: string, userId: string, coverLetter?: string, resumeUrl?: string) {
     return prisma.application.create({
-      data: { jobId, userId, status: ApplicationStatus.Pending },
+      data: {
+        jobId,
+        userId,
+        coverLetter: coverLetter || null,
+        resumeUrl: resumeUrl || null,
+        status: ApplicationStatus.Pending,
+      },
     });
   },
 
@@ -32,6 +38,12 @@ export const ApplicationModel = {
     return prisma.application.update({
       where: { id },
       data: { status },
+    });
+  },
+
+  delete(id: string) {
+    return prisma.application.delete({
+      where: { id },
     });
   },
 };

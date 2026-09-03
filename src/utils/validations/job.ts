@@ -19,6 +19,8 @@ export const jobSchema = z.object({
   type: z.enum(["Full-time", "Part-time", "Contract", "Internship"], {
     message: "Please select a valid job type.",
   }),
+  category: z.string().trim().optional().default("Technology"),
+  experienceLevel: z.string().trim().optional().default("Mid-Level"),
   description: z
     .string()
     .trim()

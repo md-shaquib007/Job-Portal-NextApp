@@ -2,9 +2,9 @@ import { getSession } from "@/config/session";
 import { ApplicationController } from "@/controllers/application.controller";
 import { apiError, apiSuccess, handleApiError } from "@/utils/api-response";
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ jobId: string }> },
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ applicationId: string }> },
 ) {
   try {
     const session = await getSession();
@@ -12,13 +12,8 @@ export async function POST(
       return apiError("Unauthorized", 401);
     }
 
-    if (session.user.role === "EMPLOYER") {
-      return apiError("Employers cannot apply to jobs.", 403);
-    }
-
-    const body = await request.json().catch(() => ({}));
-    const { jobId } = await params;
-    const result = await ApplicationController.apply(jobId, session.user.id, body);
+    const { applicationId } = await params;
+    const result = await ApplicationController.withdraw(applicationId, session.user.id);
 
     if (!result.ok) {
       return apiError(result.message ?? "Request failed", result.status);
@@ -26,6 +21,6 @@ export async function POST(
 
     return apiSuccess(result.data);
   } catch (error) {
-    return handleApiError("Error applying to job", error);
+    return handleApiError("Error withdrawing application", error);
   }
 }

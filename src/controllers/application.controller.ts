@@ -20,6 +20,7 @@ export const ApplicationController = {
   async apply(
     jobId: string,
     userId: string,
+    body?: { coverLetter?: string; resumeUrl?: string },
   ): Promise<ControllerResult<Awaited<ReturnType<typeof ApplicationModel.create>>>> {
     const job = await JobModel.findById(jobId);
     if (!job) {
@@ -35,7 +36,12 @@ export const ApplicationController = {
     }
 
     try {
-      const application = await ApplicationModel.create(jobId, userId);
+      const application = await ApplicationModel.create(
+        jobId,
+        userId,
+        body?.coverLetter,
+        body?.resumeUrl,
+      );
       return { ok: true, status: 200, data: application };
     } catch (error) {
       if (
@@ -75,6 +81,22 @@ export const ApplicationController = {
     );
 
     return { ok: true, status: 200, data: updated };
+  },
+
+  async withdraw(
+    applicationId: string,
+    userId: string,
+  ): Promise<ControllerResult<{ id: string }>> {
+    const application = await ApplicationModel.findById(applicationId);
+    if (!application) {
+      return { ok: false, status: 404, message: "Application not found." };
+    }
+    if (application.userId !== userId) {
+      return { ok: false, status: 403, message: "You can only withdraw your own applications." };
+    }
+
+    await ApplicationModel.delete(applicationId);
+    return { ok: true, status: 200, data: { id: applicationId } };
   },
 
   hasApplied(jobId: string, userId: string) {

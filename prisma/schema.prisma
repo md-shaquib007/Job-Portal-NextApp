@@ -10,6 +10,7 @@ datasource db {
 enum Role {
   JOB_SEEKER
   EMPLOYER
+  ADMIN
 }
 
 enum ApplicationStatus {
@@ -62,42 +63,70 @@ model User {
   image         String?
   password      String?
   role          Role      @default(JOB_SEEKER)
-  account       Account[]
-  session       Session[]
+  createdAt     DateTime  @default(now())
 
+  account      Account[]
+  session      Session[]
   jobs         Job[]         @relation("PostedJobs")
   applications Application[]
+  savedJobs    SavedJob[]
+
+  @@index([role])
 }
 
 model Job {
-  id          String   @id @default(cuid())
-  title       String
-  company     String
-  location    String
-  type        String
-  description String
-  salary      String?
-  postedAt    DateTime @default(now())
-  postedById  String
+  id              String   @id @default(cuid())
+  title           String
+  company         String
+  location        String
+  type            String
+  category        String   @default("Technology")
+  experienceLevel String   @default("Mid-Level")
+  description     String
+  salary          String?
+  isActive        Boolean  @default(true)
+  postedAt        DateTime @default(now())
+  postedById      String
 
   postedBy     User          @relation("PostedJobs", fields: [postedById], references: [id])
   applications Application[]
+  savedJobs    SavedJob[]
 
   @@index([postedAt])
   @@index([postedById])
+  @@index([category])
+  @@index([type])
+  @@index([isActive])
 }
 
 model Application {
-  id        String            @id @default(cuid())
-  jobId     String
-  userId    String
-  status    ApplicationStatus @default(Pending)
-  appliedAt DateTime          @default(now())
+  id          String            @id @default(cuid())
+  jobId       String
+  userId      String
+  status      ApplicationStatus @default(Pending)
+  coverLetter String?           @db.Text
+  resumeUrl   String?
+  appliedAt   DateTime          @default(now())
+  updatedAt   DateTime          @default(now()) @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@unique([jobId, userId])
   @@index([userId])
   @@index([jobId])
+  @@index([status])
+}
+
+model SavedJob {
+  id      String   @id @default(cuid())
+  userId  String
+  jobId   String
+  savedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
 }

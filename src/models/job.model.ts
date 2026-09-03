@@ -4,6 +4,8 @@ import { JobInput } from "@/utils/validations/job";
 export type JobFilters = {
   q?: string;
   type?: string;
+  category?: string;
+  experienceLevel?: string;
   location?: string;
   page?: number;
   pageSize?: number;
@@ -12,9 +14,10 @@ export type JobFilters = {
 const DEFAULT_PAGE_SIZE = 10;
 
 function buildWhere(filters: JobFilters) {
-  const { q, type, location } = filters;
+  const { q, type, category, experienceLevel, location } = filters;
   return {
     AND: [
+      { isActive: true },
       q
         ? {
             OR: [
@@ -25,6 +28,8 @@ function buildWhere(filters: JobFilters) {
           }
         : {},
       type ? { type } : {},
+      category ? { category: { contains: category, mode: "insensitive" as const } } : {},
+      experienceLevel ? { experienceLevel } : {},
       location
         ? { location: { contains: location, mode: "insensitive" as const } }
         : {},
@@ -74,6 +79,13 @@ export const JobModel = {
     return prisma.job.update({
       where: { id },
       data,
+    });
+  },
+
+  toggleActive(id: string, isActive: boolean) {
+    return prisma.job.update({
+      where: { id },
+      data: { isActive },
     });
   },
 
