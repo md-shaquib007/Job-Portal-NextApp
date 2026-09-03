@@ -75,7 +75,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user?.id) {
         token.id = user.id;
-        token.role = (user as any).role || "JOB_SEEKER";
+        token.role = user.role || "JOB_SEEKER";
         return token;
       }
       if (token.email && (!token.id || !token.role)) {

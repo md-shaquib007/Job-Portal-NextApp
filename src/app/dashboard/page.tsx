@@ -9,19 +9,29 @@ export default async function DashboardPage() {
   const session = await getSession();
   const userRole = session?.user?.role || "JOB_SEEKER";
 
+  let applications: Awaited<ReturnType<typeof ApplicationController.getDashboardData>>[0] = [];
+  let postedJobs: Awaited<ReturnType<typeof ApplicationController.getDashboardData>>[1] = [];
+
   try {
-    const [applications, postedJobs] = await ApplicationController.getDashboardData(userId);
-    return (
-      <DashboardView
-        applications={applications ?? []}
-        postedJobs={postedJobs ?? []}
-        userRole={userRole}
-      />
-    );
+    const data = await ApplicationController.getDashboardData(userId);
+    applications = data[0] ?? [];
+    postedJobs = data[1] ?? [];
   } catch (error) {
-    if (error && typeof error === "object" && "digest" in error && String(error.digest).startsWith("NEXT_REDIRECT")) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      String(error.digest).startsWith("NEXT_REDIRECT")
+    ) {
       throw error;
     }
-    return <DashboardView applications={[]} postedJobs={[]} userRole={userRole} />;
   }
+
+  return (
+    <DashboardView
+      applications={applications}
+      postedJobs={postedJobs}
+      userRole={userRole}
+    />
+  );
 }
