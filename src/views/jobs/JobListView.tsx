@@ -6,6 +6,8 @@ type Job = {
   company: string;
   location: string;
   type: string;
+  category?: string | null;
+  experienceLevel?: string | null;
   description: string;
   salary: string | null;
   postedBy: { name: string | null };
@@ -93,9 +95,18 @@ export default function JobListView({
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-2">{job.title}</h2>
                   <p className="text-gray-600 mb-2">{job.company}</p>
-                  <div className="flex items-center text-sm text-gray-500 mb-4">
-                    <span className="mr-4">{job.location}</span>
-                    <span>{job.type}</span>
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mb-3">
+                    <span className="font-semibold text-gray-700">{job.location}</span>
+                    <span>•</span>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                      {job.category || "Technology"}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-100">
+                      {job.experienceLevel || "Mid-Level"}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+                      {job.type}
+                    </span>
                   </div>
                   <p className="text-gray-600 mb-4 line-clamp-2">{job.description}</p>
                 </div>
