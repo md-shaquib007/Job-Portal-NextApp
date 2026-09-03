@@ -9,6 +9,10 @@ export async function POST(request: Request) {
       return apiError("Unauthorized", 401);
     }
 
+    if (session.user.role === "JOB_SEEKER") {
+      return apiError("Only employers can post jobs.", 403);
+    }
+
     const body = await request.json();
     const result = await JobController.create(body, session.user.id);
 

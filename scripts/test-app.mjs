@@ -139,7 +139,7 @@ async function runTests() {
   record("POST /api/auth/signup (invalid data → 400)", badSignup.status === 400);
 
   // --- Signup success ---
-  const signupRes = await signUpWithCredentials({ name: testName, email: testEmail, password: testPassword });
+  const signupRes = await signUpWithCredentials({ name: testName, email: testEmail, password: testPassword, role: "EMPLOYER" });
   const signupData = await signupRes.json();
   record(
     "POST /api/auth/signup (valid user → 201)",
@@ -148,7 +148,7 @@ async function runTests() {
   );
 
   // --- Duplicate signup ---
-  const dupSignup = await signUpWithCredentials({ name: testName, email: testEmail, password: testPassword });
+  const dupSignup = await signUpWithCredentials({ name: testName, email: testEmail, password: testPassword, role: "EMPLOYER" });
   record("POST /api/auth/signup (duplicate → 400)", dupSignup.status === 400);
 
   // --- Unauthorized job post ---
