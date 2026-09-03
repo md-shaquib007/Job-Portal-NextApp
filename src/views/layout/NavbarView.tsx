@@ -8,7 +8,19 @@ export default function Navbar() {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="bg-white shadow-sm">
+    <>
+      {!session && status !== "loading" && (
+        <div className="bg-indigo-900 text-white text-xs py-2 px-4 text-center font-medium">
+          <span>⚡ <strong className="font-bold">Live Recruiter Demo Tour</strong>: </span>
+          <span className="ml-2">👔 Employer: <code className="bg-indigo-800 px-1.5 py-0.5 rounded text-indigo-100 font-mono">employer@demo.com</code> | <code className="bg-indigo-800 px-1.5 py-0.5 rounded text-indigo-100 font-mono">demoPass1</code></span>
+          <span className="mx-3">|</span>
+          <span>👤 Candidate: <code className="bg-indigo-800 px-1.5 py-0.5 rounded text-indigo-100 font-mono">seeker@demo.com</code> | <code className="bg-indigo-800 px-1.5 py-0.5 rounded text-indigo-100 font-mono">demoPass1</code></span>
+          <Link href="/auth/signin" className="ml-3 underline font-bold hover:text-indigo-200">
+            Sign In to Tour &rarr;
+          </Link>
+        </div>
+      )}
+      <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -86,5 +98,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+  </>
   );
 }
