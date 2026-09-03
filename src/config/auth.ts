@@ -60,6 +60,7 @@ export const authOptions: AuthOptions = {
             // GitHub uses OAuth 2.0; credentials login remains available as a separate fallback.
             clientId: process.env.GITHUB_CLIENT_ID!,
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+            allowDangerousEmailAccountLinking: true,
           }),
         ]
       : []),
